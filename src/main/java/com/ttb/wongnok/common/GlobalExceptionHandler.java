@@ -2,6 +2,7 @@ package com.ttb.wongnok.common;
 
 import java.util.stream.Collectors;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -13,6 +14,7 @@ import com.ttb.wongnok.model.dto.BaseResponse;
 
 import jakarta.persistence.EntityNotFoundException;
 
+@Slf4j
 // ทำให้ class นี้เป็นตัวจัดการ Exception แบบ global (ทุก controller จะมาเข้า class นี้)
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -30,6 +32,7 @@ public class GlobalExceptionHandler {
                 .map(e -> e.getField() + ": " + e.getDefaultMessage())
                 .collect(Collectors.joining(", ")); // รวมทั้งหมดเป็นข้อความเดียว
 
+        log.error(errorMsg);
         // ส่งกลับเป็น api response 400 Bad Request พร้อมข้อความ error
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new BaseResponse<>(null, errorMsg));
     }
@@ -38,20 +41,25 @@ public class GlobalExceptionHandler {
     // method นี้จัดการกรณีหา entity ไม่เจอใน JPA เช่น findById(id).orElseThrow(...)
     public ResponseEntity<BaseResponse<String>> handleNotFound(EntityNotFoundException ex) {
         // ส่งกลับเป็น api response 404
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponse<>(null, ex.getMessage()));
+        String errorMsg = ex.getMessage() != null ? ex.getMessage() : "Entity not found";
+        log.error(errorMsg);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new BaseResponse<>(null, errorMsg));
     }
 
     @ExceptionHandler(Exception.class) // จับทุก exception ที่ไม่ถูกจับข้างบน
     public ResponseEntity<BaseResponse<String>> handleGeneral(Exception ex) {
         // ส่งกลับเป็น api response 500
+        String errorMsg = ex.getMessage() != null ? ex.getMessage() : "Internal Server Error";
+        log.error(errorMsg);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new BaseResponse<>(null, "เกิดข้อผิดพลาดภายในระบบ"));
+                .body(new BaseResponse<>(null, errorMsg));
     }
 
     // จัดการกรณี parameter ที่ไม่ตรงกับ type ที่คาดหวัง เช่น path variable เป็น String แต่คาดว่าเป็น Long
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<BaseResponse<String>> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
         String errorMsg = "Invalid value for parameter '" + ex.getName() + "': " + ex.getValue();
+        log.error(errorMsg);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new BaseResponse<>(null, errorMsg));
     }
 }

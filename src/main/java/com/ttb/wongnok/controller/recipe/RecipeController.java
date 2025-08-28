@@ -23,6 +23,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping("/api/recipes")
 public class RecipeController {
@@ -35,11 +38,14 @@ public class RecipeController {
 
     @GetMapping
     public ResponseEntity<BaseResponse<List<RecipeResponse>>> getRecipes() {
+        log.info("Retrieve recipes");
+
         List<Recipe> response = recipeService.get();
         List<RecipeResponse> recipeResponses = response.stream()
                 .map(RecipeDtoMapper::toResponse)
                 .toList();
 
+        log.info("Recipes retrieved successfully");
         BaseResponse<List<RecipeResponse>> baseResponse = new BaseResponse<>(recipeResponses,
                 "Recipes retrieved successfully");
 
