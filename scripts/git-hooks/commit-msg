@@ -2,13 +2,13 @@
 COMMIT_MSG_FILE=$1
 FIRST_LINE=$(head -1 "$COMMIT_MSG_FILE")
 
-PATTERN='^(feat|fix|docs|style|refactor|perf|test|build|ci|chore)\(TTB-[0-9]{5}\)!?: .+$'
+PATTERN='^(feat|fix|docs|style|refactor|perf|test|build|ci|chore)\(NSP-[0-9]{1,5}\)!?: .+$'
 MAX_LENGTH=72
 
 # Validate commit message format
 if ! echo "$FIRST_LINE" | grep -qE "$PATTERN"; then
   echo "Error: Commit message does not follow the required format." >&2
-  echo "Correct format: type(TTB-12345): description" >&2
+  echo "Correct format: type(NSP-12345): description" >&2
   exit 1
 fi
 
