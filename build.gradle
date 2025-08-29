@@ -39,8 +39,9 @@ tasks.named('test') {
 
 // Task สำหรับติดตั้ง Git Hooks
 tasks.register('installGitHooks', Copy) {
-	from new File(rootProject.rootDir, 'scripts/git-hooks/pre-push')
+	from new File(rootProject.rootDir, 'scripts/git-hooks/')
 	into new File(rootProject.rootDir, '.git/hooks')
+	include 'pre-commit', 'commit-msg'
 	eachFile { fileCopyDetails ->
 		fileCopyDetails.mode = 0755
 	}

@@ -10,13 +10,4 @@ if [ $status -ne 0 ]; then
 fi
 
 echo "Unit tests passed."
-
-COMMIT_MSG_FILE=$1
-FIRST_LINE=$(head -n1 "$COMMIT_MSG_FILE")
-
-if [ ${#FIRST_LINE} -gt 10 ]; then
-  echo "Error: The commit message summary (first line) is longer than 10 characters." >&2
-  exit 1
-fi
-
 exit 0

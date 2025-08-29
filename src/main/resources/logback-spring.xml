@@ -1,16 +1,12 @@
 <configuration>
     <!-- Spring Externalized Properties -->
     <springProperty name="app.name" source="spring.application.name" defaultValue="default_application"/>
+    <springProperty name="env" source="spring.profiles.active" defaultValue="unknow"/>
 
     <!-- Property -->
-    <property name="log.ttb.pattern" value="%d{yyyy-MM-dd'T'HH:mm:ssXXX} ${app.name} %thread %level %logger [%X{span_id}] [%X{trace_id}] - %msg%n%throwable"/>
+    <property name="log.pattern.file" value="%d{yyyy-MM-dd'T'HH:mm:ssXXX} [%thread] %-5level %logger{36} - %msg%n"/>
 
     <!-- Appenders -->
-    <appender name="SYSTEM" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>${log.ttb.pattern}</pattern>
-        </encoder>
-    </appender>
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>logs/application.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -20,7 +16,8 @@
         </rollingPolicy>
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
             <!-- Optional: add custom fields -->
-            <customFields>{"service":"wongnok","env":"dev"}</customFields>
+            <customFields>{"service":${app.name},"env":${env}}</customFields>
+            <pattern>${log.pattern.file}</pattern>
         </encoder>
     </appender>
 
