@@ -1,7 +1,7 @@
 <configuration>
     <!-- Spring Externalized Properties -->
     <springProperty name="app.name" source="spring.application.name" defaultValue="default_application"/>
-    <springProperty name="env" source="spring.profiles.active" defaultValue="unknow"/>
+    <springProperty name="env" source="spring.profiles.active" defaultValue="dev"/>
 
     <!-- Property -->
     <property name="log.pattern.file" value="%d{yyyy-MM-dd'T'HH:mm:ssXXX} [%thread] %-5level %logger{36} - %msg%n"/>
@@ -16,7 +16,7 @@
         </rollingPolicy>
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
             <!-- Optional: add custom fields -->
-            <customFields>{"service":${app.name},"env":${env}}</customFields>
+            <customFields>{"service":"${app.name}","env":"${env}"}</customFields>
             <pattern>${log.pattern.file}</pattern>
         </encoder>
     </appender>
@@ -24,6 +24,5 @@
     <!-- Root Logger -->
     <root level="INFO">
         <appender-ref ref="FILE"/>
-        <appender-ref ref="SYSTEM"/>
     </root>
 </configuration>

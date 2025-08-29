@@ -3,7 +3,7 @@ COMMIT_MSG_FILE=$1
 FIRST_LINE=$(head -1 "$COMMIT_MSG_FILE")
 
 PATTERN='^(feat|fix|docs|style|refactor|perf|test|build|ci|chore)\(NSP-[0-9]{1,5}\)!?: .+$'
-MAX_LENGTH=72
+MAX_LENGTH=72 #(22+50)
 
 # Validate commit message format
 if ! echo "$FIRST_LINE" | grep -qE "$PATTERN"; then
